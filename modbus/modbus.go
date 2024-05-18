@@ -23,6 +23,40 @@ const (
 	FuncCodeReadFIFOQueue              FunctionCode = 24
 )
 
+func (fc FunctionCode) String() string {
+	suffix := ""
+	if fc&0x80 != 0 {
+		fc &= (0x80 ^ 0xFF) // reset fault bit
+		suffix = "Fault"
+	}
+	switch fc {
+	case FuncCodeReadDiscreteInputs:
+		return "ReadDiscreteInputs" + suffix
+	case FuncCodeReadCoils:
+		return "ReadCoils" + suffix
+	case FuncCodeWriteSingleCoil:
+		return "WriteSingleCoil" + suffix
+	case FuncCodeWriteMultipleCoils:
+		return "WriteMultipleCoils" + suffix
+	case FuncCodeReadInputRegisters:
+		return "ReadInputRegisters" + suffix
+	case FuncCodeReadHoldingRegisters:
+		return "ReadHoldingRegisters" + suffix
+	case FuncCodeWriteSingleRegister:
+		return "WriteSingleRegister" + suffix
+	case FuncCodeWriteMultipleRegisters:
+		return "WriteMultipleRegisters" + suffix
+	case FuncCodeReadWriteMultipleRegisters:
+		return "ReadWriteMultipleRegisters" + suffix
+	case FuncCodeMaskWriteRegister:
+		return "MaskWriteRegister" + suffix
+	case FuncCodeReadFIFOQueue:
+		return "ReadFIFOQueue" + suffix
+	default:
+		return "Unknown" + suffix
+	}
+}
+
 // ExceptionCode represents a modbus exception code
 type ExceptionCode byte
 
