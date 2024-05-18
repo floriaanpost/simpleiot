@@ -19,6 +19,11 @@ type Client struct {
 // github.com/simpleiot/simpleiot/respreader is a good
 // way to do this.
 func NewClient(transport Transport, debug int) *Client {
+	// TODO: This feels like a dirty hack, but I don't know a better way that is backwards compatible
+	if frameTypeSetter, ok := transport.(interface{ setIncomingFrameType(frameType) }); ok {
+		frameTypeSetter.setIncomingFrameType(response)
+	}
+
 	return &Client{
 		transport: transport,
 		debug:     debug,

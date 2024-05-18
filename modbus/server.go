@@ -25,6 +25,11 @@ type Server struct {
 // github.com/simpleiot/simpleiot/respreader is a good
 // way to do this.
 func NewServer(id byte, transport Transport, regs *Regs, debug int) *Server {
+	// TODO: This feels like a dirty hack, but I don't know a better way that is backwards compatible
+	if frameTypeSetter, ok := transport.(interface{ setIncomingFrameType(frameType) }); ok {
+		frameTypeSetter.setIncomingFrameType(request)
+	}
+
 	return &Server{
 		id:        id,
 		transport: transport,

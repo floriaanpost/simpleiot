@@ -62,26 +62,54 @@ var minRequestLen = map[FunctionCode]int{
 	FuncCodeReadFIFOQueue:              3,
 }
 
+// minResponseLen is the minimum number of PDU bytes for a resppnse with
+// the given function code (not including slave address or checksum,
+// which are part of the ADU).
+var minResponseLen = map[FunctionCode]int{
+	FuncCodeReadDiscreteInputs:     2,
+	FuncCodeReadCoils:              2,
+	FuncCodeWriteSingleCoil:        5,
+	FuncCodeWriteMultipleCoils:     5,
+	FuncCodeReadInputRegisters:     2,
+	FuncCodeReadHoldingRegisters:   2,
+	FuncCodeWriteSingleRegister:    5,
+	FuncCodeWriteMultipleRegisters: 5,
+	// TODO: find out what these frames look like
+	FuncCodeReadWriteMultipleRegisters: 0,
+	FuncCodeMaskWriteRegister:          0,
+	FuncCodeReadFIFOQueue:              0,
+}
+
 func (e ExceptionCode) Error() string {
 	switch e {
-	case 1:
+	case ExcIllegalFunction:
 		return "ILLEGAL FUNCTION"
-	case 2:
+	case ExcIllegalAddress:
 		return "ILLEGAL DATA ADDRESS"
-	case 3:
+	case ExcIllegalValue:
 		return "ILLEGAL DATA VALUE"
-	case 4:
+	case ExcServerDeviceFailure:
 		return "SERVER DEVICE FAILURE"
-	case 5:
+	case ExcAcknowledge:
 		return "ACKNOWLEDGE"
-	case 6:
+	case ExcServerDeviceBusy:
 		return "SERVER DEVICE BUSY"
-	case 8:
+	case ExcMemoryParityError:
 		return "MEMORY PARITY ERROR"
-	case 0x0a:
+	case ExcGatewayPathUnavilable:
 		return "GATEWAY PATH UNAVAILABLE"
-	case 0x0B:
+	case ExcGatewayTargetFailedToRespond:
 		return "GATEWAY TARGET DEVICE FAILED TO RESPOND"
 	}
 	return fmt.Sprintf("unknown exception code %x", int(e))
 }
+
+// This is used to set the incoming type of the transport.
+// It is needed because to find the end of the frame, we need to know if
+// we are dealing with a request or a response frame.
+type frameType int
+
+const (
+	response frameType = iota
+	request
+)
