@@ -121,7 +121,7 @@ func (c *Client) WriteSingleReg(id byte, reg, value uint16) error {
 
 // executeRequests sends data to the server and parses the response. It also does
 // basic error checking:
-// - Did the server return a fault?
+// - Did the server return an exception?
 // - Did the server respond with the same function code?
 func (c *Client) executeRequest(id byte, req PDU) (PDU, error) {
 	if c.debug >= 1 {
@@ -170,7 +170,7 @@ func (c *Client) executeRequest(id byte, req PDU) (PDU, error) {
 		funcCode = resp.FunctionCode & (0x80 ^ 0xFF) // reset the bit
 	}
 
-	// first check function code before checking fault
+	// first check function code before checking exception
 	if funcCode != req.FunctionCode {
 		return PDU{}, errors.New("resp contains wrong function code")
 	}

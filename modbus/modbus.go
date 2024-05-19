@@ -26,8 +26,8 @@ const (
 func (fc FunctionCode) String() string {
 	suffix := ""
 	if fc&0x80 != 0 {
-		fc &= (0x80 ^ 0xFF) // reset fault bit
-		suffix = "Fault"
+		fc &= (0x80 ^ 0xFF) // reset exception bit
+		suffix = "Exception"
 	}
 	switch fc {
 	case FuncCodeReadDiscreteInputs:
